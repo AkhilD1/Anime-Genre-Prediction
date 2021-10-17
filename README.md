@@ -28,3 +28,4 @@ We will be using the **synopsis** from this above data to predict the genre. A c
 We currently plan on using techniques like Naive Bayes, TF-IDF, n-grams and Word2Vec to achieve the task.
 
 To measure the performance of our model on the test set, we will use metrics like accuracy, error rate, precision and recall, and F-scores.
+
