@@ -23,8 +23,6 @@ for i in range(15000):
         if len(data['synopsis']) > 200:
             # Dump the json data into a file for subsequent usage
             with open('{}'.format(i), 'w') as f:
-                data = tmp.json()
-                del(data['main_picture'])
                 f.write(json.dumps(data))
     # Sleep to prevent too many requests to the api
     time.sleep(1)
