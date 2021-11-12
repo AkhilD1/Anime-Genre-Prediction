@@ -10,7 +10,7 @@ headers = {'Authorization': 'Bearer {}'.format(bearer_token)}
 
 # Fetch the first 15000 ids
 for i in range(15000):
-    tmp = requests.get(endpoint.format(i), headers = headers)
+    tmp = requests.get(endpoint.format(i), headers=headers)
     # Since not all numbers are valid ids, the request can return an error
     if tmp.status_code == 200:
         # Write the data to a file
