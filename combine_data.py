@@ -1,8 +1,12 @@
 import json
 import os
 import pickle
+import re
 
 import nltk
+from nltk.corpus import stopwords
+from nltk import RegexpTokenizer
+from nltk.stem.porter import PorterStemmer
 import numpy as np
 import pandas as pd
 
@@ -36,22 +40,41 @@ data = pd.DataFrame({'id': anime_id,
 print(data.info())
 
 # Since each 'id' is unique, there are no duplicates in the data
-# We can that some entries do not have 'genres' populated
+# We can see that some entries do not have 'genres' populated
 # We will be dropping these entries
-data.dropna()
+data.dropna(inplace = True)
+
+# Remove Source from synopsis
+if any(data.synopsis.apply(lambda x: 'Source' in x)):
+    data.synopsis = data.synopsis.apply(
+        lambda x: re.sub(
+            '[\[\(\s]*Source[:\s]*.*[\]\)\s]*|\[[W]ritten.*\]', '', x))
+if any(data.synopsis.apply(lambda x: 'Source' in x)):
+    print('Error cleaning')
+if any(data.synopsis.apply(lambda x: '[Written' in x)):
+    print('Error cleaning')
+
+# Convert data to lowercase
+data.synopsis = data.synopsis.apply(lambda x: x.lower())
+
+# Tokenize the data. Remove any punctuation and whitespaces
+tokenizer = RegexpTokenizer(r'\w+')
+data.synopsis = data.synopsis.apply(lambda x: tokenizer.tokenize(x))
+
+# Remove stopwords
+nltk.download('stopwords')
+stops = set(stopwords.words("english"))
+data.synopsis = data.synopsis.apply(
+    lambda x: [word for word in x if word not in stops])
+
+# Stemming
+stemmer = PorterStemmer()
+data.synopsis = data.synopsis.apply(lambda x: [stemmer.stem(word) for word in x])
 
 # Save the data as pickle for later
 with open('data_combined.obj', 'wb') as f:
     pickle.dump(data, f)
 
 # TODO (KJ):
-# Clean the data using nltk/regex
-    # I. Remove source from synopsis. Only some entries have source mentioned.
-    # It occurs only at the end of the synopsis.
-    # Type 1: (Source: .*)
-    # (Source: AniDB), (Source: ANN), (Source: AnimeNfo), (Source: Wikipedia), etc.
-    # Type 2: [Written by MAL Rewrite]
-    # II. Stop words, White Spaces
-    # III. Stemming, lemmitizing
 # Create n-grams, tf-idf scores
 # Create one-hot encoding for the genres
