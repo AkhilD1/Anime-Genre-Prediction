@@ -73,28 +73,63 @@ data.synopsis = data.synopsis.apply(
     lambda x: [stemmer.stem(word) for word in x])
 
 # One-hot encoding
-genre_dict = {}
+for index, row in data.iterrows():
+    for genre in row.genres:
+        if not genre['name'] in data:
+            data[genre['name']] = 0
+        data[genre['name']][index] = 1
+
+# We can now drop the genres column
+data.drop('genres', axis=1, inplace=True)
+
+# Visualizing data distribution
 genre_count = {}
-for entry in data.genres:
-    for x in entry:
-        genre_count[x['id']] = genre_count.get(x['id'], 0) + 1
-        genre_dict[x['id']] = x['name']
+for col in data:
+    if col not in ['id', 'title', 'synopsis']:
+        genre_count[col] = data[col].sum()
 
 # Plotting the data distribution
-plt.bar(genre_count.keys(), genre_count.values())
-plt.xlabel('genres')
-plt.ylabel('count')
-plt.xticks(
-    list(genre_dict.keys()), list(genre_dict.values()), rotation='vertical')
-plt.savefig('anime_count.png')
+fig, axs = plt.subplots(2, 1)
+axs[0].bar(genre_count.keys(), genre_count.values())
+axs[0].set(xlabel='genres', ylabel='count')
+axs[0].set_xticklabels(genre_count.keys(), rotation='vertical')
 
 # Log Scale plot
-plt.bar(genre_count.keys(), genre_count.values(), log=True)
-plt.xlabel('genres')
-plt.ylabel('count (log scale)')
-plt.xticks(
-    list(genre_dict.keys()), list(genre_dict.values()), rotation='vertical')
-plt.savefig('anime_count_log.png')
+axs[1].bar(genre_count.keys(), genre_count.values(), log=True)
+axs[1].set(xlabel='genres', ylabel='count (log scale)')
+axs[1].set_xticklabels(genre_count.keys(), rotation='vertical')
+
+fig.suptitle('Distribution of data across genres', y=0.98)
+fig.set_size_inches(10, 7)
+fig.tight_layout()
+fig.savefig('anime_count.png')
+
+# We see that the data is very imbalanced and genres
+# have a very low number of entries. For the project
+# we will keep only the genres which have more than
+# 200 entries.
+
+genre_list = list(genre_count.keys())
+for genre in genre_list:
+    if genre_count[genre] < 200:
+        data.drop(genre, axis=1, inplace=True)
+        del(genre_count[genre])
+
+# Plotting the new data distribution
+fig, axs = plt.subplots(1, 1)
+axs.bar(genre_count.keys(), genre_count.values())
+axs.set(xlabel='genres', ylabel='count')
+axs.set_xticklabels(genre_count.keys(), rotation='vertical')
+fig.tight_layout()
+fig.savefig('new_anime_count.png')
+
+# Drop the rows that only have zeros in remaining genres
+row_del_list = []
+for i, row in data.iterrows():
+    if sum(row[3:]) == 0:
+        row_del_list.append(i)
+
+data.drop(row_del_list, inplace=True)
 
 # Save the data as pickle for later
 with open('data_combined.obj', 'wb') as f:
@@ -102,4 +137,3 @@ with open('data_combined.obj', 'wb') as f:
 
 # TODO (KJ):
 # Create n-grams, tf-idf scores
-# Create one-hot encoding for the genres
