@@ -3,6 +3,7 @@ import os
 import pickle
 import re
 
+from matplotlib import pyplot as plt
 import nltk
 from nltk.corpus import stopwords
 from nltk import RegexpTokenizer
@@ -70,6 +71,30 @@ data.synopsis = data.synopsis.apply(
 stemmer = PorterStemmer()
 data.synopsis = data.synopsis.apply(
     lambda x: [stemmer.stem(word) for word in x])
+
+# One-hot encoding
+genre_dict = {}
+genre_count = {}
+for entry in data.genres:
+    for x in entry:
+        genre_count[x['id']] = genre_count.get(x['id'], 0) + 1
+        genre_dict[x['id']] = x['name']
+
+# Plotting the data distribution
+plt.bar(genre_count.keys(), genre_count.values())
+plt.xlabel('genres')
+plt.ylabel('count')
+plt.xticks(
+    list(genre_dict.keys()), list(genre_dict.values()), rotation='vertical')
+plt.savefig('anime_count.png')
+
+# Log Scale plot
+plt.bar(genre_count.keys(), genre_count.values(), log=True)
+plt.xlabel('genres')
+plt.ylabel('count (log scale)')
+plt.xticks(
+    list(genre_dict.keys()), list(genre_dict.values()), rotation='vertical')
+plt.savefig('anime_count_log.png')
 
 # Save the data as pickle for later
 with open('data_combined.obj', 'wb') as f:
