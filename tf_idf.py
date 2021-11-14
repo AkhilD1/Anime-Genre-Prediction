@@ -102,7 +102,6 @@ vectorizer = TfidfVectorizer(tokenizer=regex_tokenizer.tokenize,
                              ngram_range=(1, 2),max_features=9000)
 
 document_matrix = vectorizer.fit_transform(data.synopsis)
-print("Dimensions of training data",document_matrix.shape)
 
 # We can now drop the synopsis column from the data
 data.drop('synopsis', axis=1, inplace=True)
