@@ -72,16 +72,37 @@ data.synopsis = data.synopsis.apply(
 nltk.download('stopwords')
 stops = set(stopwords.words("english"))
 
-# Build a custom TfidfVectorizer
+# Now let's find word frequencies
+word_count = {}
+for item in data.synopsis:
+    item = item. split(" ")
+    for index in item:
+        if index in word_count:
+            word_count[index] += 1
+        else:
+            word_count[index] = 1
+
+print("Total number of unique words ", len(word_count))
+
+number_of_words = []
+for i in range(1, 11):
+    count = 0
+    for item in word_count:
+        if word_count[item] == i:
+            count += 1
+    number_of_words.append(count)
+
+plt.bar(range(1,11), number_of_words)
+
 tokenizer = TfidfVectorizer().build_tokenizer()
 regex_tokenizer = RegexpTokenizer(r'\w+')
-# Use bigrams as features
+# Use Unigrams,Bigrams as features
 vectorizer = TfidfVectorizer(tokenizer=regex_tokenizer.tokenize,
                              stop_words=stops,
-                             ngram_range=(2, 2))
+                             ngram_range=(1, 2),max_features=9000)
 
 document_matrix = vectorizer.fit_transform(data.synopsis)
-vectorizer.get_feature_names_out()
+print("Dimensions of training data",document_matrix.shape)
 
 # We can now drop the synopsis column from the data
 data.drop('synopsis', axis=1, inplace=True)
