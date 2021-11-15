@@ -169,7 +169,7 @@ for i in range(1, 11):
             count += 1
     number_of_words.append(count)
 
-plt.bar(range(1,11), number_of_words)
+plt.bar(range(1, 11), number_of_words)
 
 # 4. Generating Document Matrix
 # This involves tokenizing, stop-word removal, N-gram generation
