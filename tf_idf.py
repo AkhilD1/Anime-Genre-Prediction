@@ -145,32 +145,6 @@ stemmer = PorterStemmer()
 data.synopsis = data.synopsis.apply(
     lambda x: ' '.join([stemmer.stem(word) for word in x.split()]))
 
-# Create a list of stop words
-nltk.download('stopwords')
-stops = set(stopwords.words("english"))
-
-# Now let's find word frequencies
-word_count = {}
-for item in data.synopsis:
-    item = item. split(" ")
-    for index in item:
-        if index in word_count:
-            word_count[index] += 1
-        else:
-            word_count[index] = 1
-
-print("Total number of unique words ", len(word_count))
-
-number_of_words = []
-for i in range(1, 11):
-    count = 0
-    for item in word_count:
-        if word_count[item] == i:
-            count += 1
-    number_of_words.append(count)
-
-plt.bar(range(1, 11), number_of_words)
-
 # 4. Generating Document Matrix
 # This involves tokenizing, stop-word removal, N-gram generation
 # and tf-idf calculation
