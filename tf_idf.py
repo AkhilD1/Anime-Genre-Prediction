@@ -93,8 +93,8 @@ fig.savefig('anime_count.png')
 
 # We see that the data is very imbalanced and genres have a very low number
 # of entries. For the project we will keep only the genres which have more
-# than 200 entries.
-genre_count = genre_count[genre_count > 200]
+# than 400 entries.
+genre_count = genre_count[genre_count > 400]
 data = data[data.columns.intersection(
     ['synopsis'] + genre_count.index.tolist())]
 
