@@ -1,7 +1,0 @@
-TODO:
-
-    1. K Nearest
-    2. Naive Bayes
-    3. SVC (One vs all)
-    4. Decision Trees
-    5. Logisitic Regression (One vs all)
