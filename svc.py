@@ -14,27 +14,27 @@ with open('tfidf/labels.obj', 'rb') as f:
 
 categories = y.columns
 
-# Split data into training and testing
-x_train, x_test = train_test_split(
-    x, random_state=0, test_size=0.3, shuffle=True)
-y_train, y_test = train_test_split(
-    y, random_state=0, test_size=0.3, shuffle=True)
-print('Shape of training data', x_train.shape)
-print('Shape of training labels', y_train.shape)
-print('Shape of test data', x_test.shape)
-print('Shape of test labels', y_test.shape)
+scores = []
+for i in range(10):
+    # Split data into training and testing
+    x_train, x_test = train_test_split(
+        x, random_state=i, test_size=0.3, shuffle=True)
+    y_train, y_test = train_test_split(
+        y, random_state=i, test_size=0.3, shuffle=True)
 
-clf = OneVsRestClassifier(LinearSVC(), n_jobs=1)
-clf.fit(x_train, y_train)
-predicted_matrix = clf.predict(x_test)
+    clf = OneVsRestClassifier(LinearSVC(), n_jobs=1)
+    clf.fit(x_train, y_train)
+    predicted_matrix = clf.predict(x_test)
 
-# Find the count of cases where at least one of the genres matches the original
-df = pd.DataFrame(predicted_matrix, index=y_test.index)
-new = pd.DataFrame(
-    y_test.values*df.values, columns=y_test.columns, index=y_test.index)
-count = np.count_nonzero(new.sum(axis=1))
+    # Find the count of cases where at least one of the genres
+    # matches the original
+    df = pd.DataFrame(predicted_matrix, index=y_test.index)
+    new = pd.DataFrame(
+        y_test.values*df.values, columns=y_test.columns, index=y_test.index)
+    count = np.count_nonzero(new.sum(axis=1))
 
-custom_score = count/len(predicted_matrix)
-print('score: {}'.format(custom_score))
-# Logistic Regression score: 0.6450824679291387
-# LinearSVC score: 0.6450824679291387
+    custom_score = count/len(predicted_matrix)
+    scores.append(custom_score)
+
+print('scores: {}\navg: {}, max: {}, min: {}'.format(
+    scores, np.mean(scores), max(scores), min(scores)))
