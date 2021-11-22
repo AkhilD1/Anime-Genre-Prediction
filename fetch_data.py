@@ -8,8 +8,8 @@ endpoint = 'https://api.myanimelist.net/v2/anime/{}?fields=id,title,synopsis,gen
 bearer_token = '<token-string>'
 headers = {'Authorization': 'Bearer {}'.format(bearer_token)}
 
-# Fetch the first 15000 ids
-for i in range(15000):
+# Fetch the first 40000 ids
+for i in range(40000):
     tmp = requests.get(endpoint.format(i), headers=headers)
     # Since not all numbers are valid ids, the request can return an error
     if tmp.status_code == 200:
