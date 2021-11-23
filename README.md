@@ -7,25 +7,33 @@ Project by Team 10:
 * Akhil Reddy Dooliganti (AkhilD1)
  
  
-In this project we will try to predict the genre of anime from it's synopsis. The data we will be using for this project is obtained from MyAnimeList API https://myanimelist.net/apiconfig/references/api/v2.
+In this project we try to predict the genre of an anime from its synopsis. We obtain the data from MyAnimeList API. MyAnimeList is a popular online anime and manga community and database. The API documentation can be found at https://myanimelist.net/apiconfig/references/api/v2. Please refer to the fetch_data.py script to look at how we use the API to obtain the data.
 
-A sample query (as shown in the documentation) to this API would be:
-
-curl 'https://api.myanimelist.net/v2/anime/30230?fields=id,title,main_picture,alternative_titles,start_date,end_date,synopsis,mean,rank,popularity,num_list_users,num_scoring_users,nsfw,created_at,updated_at,media_type,status,genres,my_list_status,num_episodes,start_season,broadcast,source,average_episode_duration,rating,pictures,background,related_anime,related_manga,recommendations,studios,statistics' \
--H 'Authorization: Bearer YOUR_TOKEN'
-
-
-While we can get lots of details from the API, we plan on utilizing the following:
+While we can query many details about each anime, we use only the following fields in this project:
 
 * **id**: Unique Identifier
 * **title**: Title of the anime
-* **alternate_titles**: Alternate titles of the anime
 * **synopsis**: Short plot discription
-* **genres**: Genre of the anime
+* **genres**: List of genres of the anime
 
-We will be using the **synopsis** from this above data to predict the genre. A complete list of genres can be found at https://myanimelist.net/anime.php
+We will be using the **synopsis** from the above data to predict the genre. A complete list of genres along with their descriptions can be found at https://myanimelist.net/anime/genre/info.
 
-We currently plan on using techniques like Naive Bayes, TF-IDF, n-grams and Word2Vec to achieve the task.
+As part of preprocessing, we remove the stopwords, use porter stemmer to stem the words in each synopsis and use TfidfVectorizer from scikit-learn to generate a document matrix consisting of the tokens and and their corresponding tf-idf scores. We also one-hot encode the genres. Please refer to tf_idf.py for more details.
 
-To measure the performance of our model on the test set, we will use metrics like accuracy, error rate, precision and recall, and F-scores.
+Finally we compare the performance of the following classification techniques:
+
+* Logistic Regression
+* Linear SVC
+* Random Forests
+
+To measure the performance of our model, we check if any of the predicted labels / predicted genre with highest probability belongs to the original list of genres. We use K-Fold testing for the same. Please refer to the files logistic_regression.py, svc.py and random_forest.py.
+
+We also include a Google Colab ipynb that combines the functionality from the above files, for ready reference. This also includes any visualizations relevant to the project. The following files contain the relevant visualizations from the ipynb file:
+
+* anime_count.png
+* genre_correlation.png
+* new_anime_count.png
+* synopsis_length.png
+
+Please refer to the project report under doc/paper.pdf.
 
