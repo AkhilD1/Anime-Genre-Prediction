@@ -1,7 +1,7 @@
 ---
 title: Semester Project - Anime Genre Prediction from Synopsis
 date: "22 November 2021"
-author: Kartikeya Jain - Team 10
+author: Kartikeya Jain,Akhil Dooliganti,Yash Trivedi - Team 10
 
 header-includes: |
   \usepackage{booktabs}
